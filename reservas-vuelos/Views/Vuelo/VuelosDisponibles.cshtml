@@ -1,0 +1,49 @@
+﻿<form action="@Url.Action("TraerVuelos", "Vuelo")" method="post">
+    <section class="row">
+        <div class="col-auto">
+            <input type="radio" id="roundFlight" name="oneWay" value="1">
+            <label for="roundFlight">Ida y vuelta</label>
+        </div>
+
+        <div class="col-auto">
+            <input type="radio" id="singleFlight" name="oneWay" value="0">
+            <label for="singleFlight">Solo ida</label>
+        </div>
+    </section>
+    <br />
+    <div class="row">
+        <section class="col-md-2">
+            <label for="exampleDataList" class="form-label">Origen</label>
+            <input class="form-control" list="datalistOptions" id="originPoint" placeholder="Type to search..." name="departureIataCode">
+            <datalist id="datalistOptions">
+                <option value="SJO">
+                <option value="LAX">
+            </datalist>
+        </section>
+        <section class="col-md-2">
+            <label for="exampleDataList" class="form-label">Destino</label>
+            <input class="form-control" list="datalistOptions" id="destinationPoint" placeholder="Type to search..." name="arrivalIataCode">
+            <datalist id="datalistOptions">
+                <option value="LAX">
+                <option value="SJO">
+            </datalist>
+        </section>
+        <section class="col-md-4 row">
+            <div class="col-auto">
+                <label for="startDate" class="form-label">Ida</label>
+                <input id="startDate" class="form-control" type="date" name="departureDate" />
+            </div>
+            <div class="col-auto">
+                <label for="finalDate" class="form-label">Vuelta</label>
+                <input id="finalDate" class="form-control" type="date" name="arrivalDate" />
+            </div>
+        </section>
+        <section class="col-md-2">
+            <label for="exampleDataList" class="form-label">Pasajeros</label>
+            <input type="text" class="form-control" id="passengersNo" placeholder="1" value="1">
+        </section>
+        <section class="col-md-2 text-center">
+            <button class="btn btn-primary" type="submit">Buscar</button>
+        </section>
+    </div>
+</form>

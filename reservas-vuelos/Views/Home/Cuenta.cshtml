@@ -1,0 +1,126 @@
+﻿@model reservas_vuelos.Models.Cuenta
+<main>
+    <div class="row row-cols-1 mb-2">
+        <div class="col-3">
+            <div class="card mb-4 rounded-3 shadow-sm text-center">
+                <div class="card-header py-3">
+                    <h4 class="my-0 fw-normal">@Html.DisplayFor(model => model.usuario.NombreCompleto)</h4>
+                </div>
+                <div class="card-body">
+                    <img src="https://thumbs.dreamstime.com/b/profile-icon-online-gradient-color-189417361.jpg" alt="" class="w-100">
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li><b>Miembro desde: </b>@Html.DisplayFor(model => model.usuario.FechaRegistro)</li>
+                        <li><b>Compras realizadas: </b>@Model.reservasFuturas.Count()</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="card mb-4 rounded-3 shadow-sm">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-11">
+                            <h3 class="card-title">Información de usuario</h3>
+                        </div>
+                        <div class="col-1">
+                            <button type="button" class="btn btn-sm btn-outline-primary">Editar</button>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li><b>Nombre completo: </b>@Html.DisplayFor(model => model.usuario.NombreCompleto)</li>
+                        <li><b>Correo electrónico: </b>@Html.DisplayFor(model => model.usuario.Email)</li>
+                        <li><b>Cédula: </b>@Html.DisplayFor(model => model.usuario.Cedula)</li>
+                    </ul>
+
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active" id="nav-futuras-tab" data-bs-toggle="tab" data-bs-target="#nav-futuras" type="button" role="tab" aria-controls="nav-futuras" aria-selected="true">Reservas futuras</button>
+                            <button class="nav-link" id="nav-pasadas-tab" data-bs-toggle="tab" data-bs-target="#nav-pasadas" type="button" role="tab" aria-controls="nav-pasadas" aria-selected="false">Reservas pasadas</button>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-futuras" role="tabpanel" aria-labelledby="nav-futuras-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">No. de reserva</th>
+                                        <th scope="col">No. de vuelo</th>
+                                        <th scope="col">Ruta</th>
+                                        <th scope="col">Rango de fechas</th>
+                                        <th scope="col">No. de pasajeros</th>
+                                        <th scope="col">Duración</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.reservasFuturas != null && Model.reservasFuturas.Count() > 0)
+                                    {
+                                        foreach (var reserva in Model.reservasFuturas)
+                                        {
+                                            <tr>
+                                                <th>@reserva.reserveNo</th>
+                                                <td>@reserva.vuelo.flightNo</td>
+                                                <td>@reserva.vuelo.departureIataCode - @reserva.vuelo.arrivalIataCode</td>
+                                                <td>@reserva.vuelo.departureDate al @reserva.vuelo.arrivalDate</td>
+                                                <td>@reserva.passengersNo</td>
+                                                <td>@reserva.vuelo.duration horas</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-outline-primary">Ver</button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="7">No hay reservas hechas.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="nav-pasadas" role="tabpanel" aria-labelledby="nav-pasadas-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">No. de reserva</th>
+                                        <th scope="col">No. de vuelo</th>
+                                        <th scope="col">Ruta</th>
+                                        <th scope="col">Rango de fechas</th>
+                                        <th scope="col">No. de pasajeros</th>
+                                        <th scope="col">Duración</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.reservasViejas != null && Model.reservasViejas.Count() > 0)
+                                    {
+                                        foreach (var reservaVieja in Model.reservasViejas)
+                                        {
+                                            <tr>
+                                                <th>@reservaVieja.reserveNo</th>
+                                                <td>@reservaVieja.vuelo.flightNo</td>
+                                                <td>@reservaVieja.vuelo.departureIataCode - @reservaVieja.vuelo.arrivalIataCode</td>
+                                                <td>@reservaVieja.vuelo.departureDate al @reservaVieja.vuelo.arrivalDate</td>
+                                                <td>@reservaVieja.passengersNo</td>
+                                                <td>@reservaVieja.vuelo.duration horas</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-outline-primary">Ver</button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    } else {
+                                        <tr>
+                                            <td colspan="7">No hay reservas hechas.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>

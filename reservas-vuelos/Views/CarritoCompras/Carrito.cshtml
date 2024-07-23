@@ -1,0 +1,233 @@
+﻿<main>
+    <div class="container my-5">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row" style="align-items: flex-start;">
+                        <!--Detalle vuelos-->
+                        <div class="col-sm-9">
+                            <div class="me-2">
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="ms-2 mt-2">Detalle carrito</h5>
+                                </div>
+                                <hr class="mt-2 mb-2" />
+                                <div id="vuelos-carrito">
+
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <label class="align-self-center">
+                                    <b>Total: <span id="total">0</span></b>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!--Detalle pasajero-->
+                        <div class="col-sm-3">
+                            <form>
+                                <div class="card">
+                                    <div class="card-body bg-light">
+                                        <h5 class="card-title">Adulto 1</h5>
+                                        <div class="mb-2">
+                                            <label for="genero" class="form-label">Género:</label>
+                                            <select class="form-select form-select-sm" id="genero">
+                                                <option value="M">Masculino</option>
+                                                <option value="F">Femenino</option>
+                                                <option value="O">Otro</option>
+                                            </select>
+                                            <br />
+                                            <label for="txtnombre" class="form-label">Primer nombre:</label>
+                                            <input type="text" class="form-control form-control-sm" id="txtnombre" autocomplete="off" />
+                                            <br />
+                                            <label for="txtapellido" class="form-label">Primer apellido:</label>
+                                            <input type="text" class="form-control form-control-sm" id="txtapellido" autocomplete="off" />
+                                            <br />
+                                            <label for="dtnacimiento" class="form-label">Fecha de nacimiento:</label>
+                                            <input type="date" class="form-control form-control-sm" id="dtnacimiento" autocomplete="off" />
+                                            <br />
+                                            <label for="nacionalidad" class="form-label">Nacionalidad:</label>
+                                            <select class="form-select form-select-sm" id="nacionalidad">
+                                                <option value="CR">Costa Rica</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="card">
+                                    <div class="card-body bg-light">
+                                        <h5 class="card-title">Titular de la reserva</h5>
+                                        <div class="mb-2">
+                                            <label for="prefijo" class="form-label">Prefijo:</label>
+                                            <select class="form-select form-select-sm" id="prefijo">
+                                                <option value="CR">Costa Rica (506)</option>
+                                            </select>
+                                            <br />
+                                            <label for="txttelefono" class="form-label">Teléfono:</label>
+                                            <input type="text" class="form-control form-control-sm" id="txttelefono" autocomplete="off" />
+                                            <br />
+                                            <label for="txtemail" class="form-label">Correo electrónico:</label>
+                                            <input type="text" class="form-control form-control-sm" id="txtemail" autocomplete="off" />
+                                        </div>
+                                        <br />
+                                        <div class="d-grid">
+                                            <button class="btn btn-success" type="button" onclick="RealizarPago()">Terminar y procesar pago</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    $(document).ready(function () {
+        jQuery.ajax({
+            url: '@Url.Action("ListarVuelosCarrito", "CarritoCompras")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+
+                $.each(response.data, function (i, item) {
+                    $("<div>").addClass("card mb-2 card-vuelo").append(
+                        $("<div>").addClass("card-body").append(
+                            $("<div>").addClass("row").append(
+
+                                $("<div>").addClass("col-sm-4 align-self-center").append(
+                                    $("<span>").addClass("font-wight-bold d-block").text("Ruta"),
+                                    $("<span>").text(item.idVuelo.departureIataCode + " - " + item.idVuelo.arrivalIataCode)
+
+                                ),
+
+                                $("<div>").addClass("col-sm-2 align-self-center").append(
+                                    $("<span>").addClass("font-wight-bold d-block").text("Pasajeros"),
+                                    $("<span>").text("1")
+                                ),
+
+                                $("<div>").addClass("col-sm-2 align-self-center").append(
+                                    $("<span>").addClass("font-wight-bold d-block").text("Precio"),
+                                    $("<span>").text(item.idVuelo.currency + " " + item.idVuelo.total)
+                                ),
+
+                                $("<div>").addClass("col-sm-2 align-self-center").append(
+                                    $("<div>").addClass("d-flex").append(
+                                        $("<input>").addClass("form-control input-cantidad p-1 text-center rounded-0").attr({ "disabled": "disabled" })
+                                            .css({ "width": "40px" })
+                                            .data("idVuelo", item.idVuelo)
+                                            .val(item.cantidad),
+                                    )
+                                ),
+
+                                $("<div>").addClass("col-sm-2 align-self-center").append(
+                                    $("<button>").addClass("btn btn-outline-danger btn-eliminar").append($("<i>").addClass("fas fa-trash-alt"), "Eliminar")
+                                        .data("idvuelo", item.idVuelo.flightNo),
+                                )
+
+                            )
+                        )
+                    ).appendTo("#vuelos-carrito")
+                })
+                sumarTotal();
+            }
+        })
+
+    })
+
+
+    function sumarTotal() {
+            var sumaTotal = parseFloat(0)
+
+        $("input.input-cantidad").each(function (i) {
+                var precio = $(this).data("idVuelo").total;
+                var cantidad = parseFloat($(this).val())
+
+                var subtotal = precio * cantidad;
+
+                sumaTotal += subtotal;
+            })
+
+            $("#total").text(sumaTotal.toFixed(2))
+            $("#total").data("sumatotal", sumaTotal)
+    }
+
+    $(document).on("click", ".btn-eliminar", function () {
+
+        var idvuelo = $(this).data("idvuelo");
+        var card_vuelo = $(this).parents("div.card-vuelo");
+
+            jQuery.ajax({
+                url: '@Url.Action("EliminarCarrito", "CarritoCompras")',
+                type: "POST",
+                data: JSON.stringify({ idVuelo: idvuelo }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.respuesta) {
+                        card_vuelo.remove();
+                        mostrarCantidadCarrito();
+                        sumarTotal();
+                    } else {
+                        swal("", data.mensaje, "warning");
+                    }
+                }
+            })
+
+
+    })
+
+
+    function RealizarPago() {
+        if (parseInt($("#cantidadcarrito").text()) == 0) {
+            swal("", "No existe vuelos en el carrito", "warning");
+        }
+
+        var venta = {
+
+            TotalProducto: $("input.input-cantidad").length,
+            MontoTotal: 0,
+            Nombre: $("#txtnombre").val(),
+            Apellido: $("#txtapellido").val(),
+            FechaNacimiento: $("#dtnacimiento").val(),
+            Nacionalidad: $("#nacionalidad").val(),
+            Prefijo: $("#prefijo").val(), 
+            Telefono: $("#txttelefono").val(),
+            CorreoElectronico: $("#txtemail").val()
+
+        }
+
+        var lista_carrito = [];
+
+        $("input.input-cantidad").each(function (i) {
+            var vuelo = $(this).data("idVuelo");
+            var cantidad = parseFloat($(this).val())
+
+            lista_carrito.push({
+                idVuelo: vuelo,
+                cantidad: cantidad
+            })
+
+            jQuery.ajax({
+                url: '@Url.Action("ProcesarPago", "CarritoCompras")',
+                type: "POST",
+                data: JSON.stringify({ olistaCarrito: lista_carrito, oVenta: venta }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.Status) {
+                        window.location.href = data.Link;
+                    } else {
+                        swal("", "Vuelve a intentarlo más tarde", "warning");
+                    }
+                }
+            })
+
+        })
+    }
+
+</script>
